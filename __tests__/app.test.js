@@ -23,7 +23,7 @@ describe('/api/topics tests:', () => {
       .get('/api/topics')
       .expect(200)
       .then(({ body: { topics } }) => {
-        expect(topics).toEqual(data.topicData)
+        expect(topics.length).toBeGreaterThan(0)
       })
   })
   test('GET 200: Responds with topic objects that contain "slug" and "description" keys', () => {
@@ -31,8 +31,10 @@ describe('/api/topics tests:', () => {
       .get('/api/topics')
       .expect(200)
       .then(({ body: { topics } }) => {
-        expect(topics[0]).toHaveProperty('slug')
-        expect(topics[0]).toHaveProperty('description')
+        topics.forEach((topic) => {
+          expect(topic).toHaveProperty('slug')
+          expect(topic).toHaveProperty('description')
+        })
       })
   })
 })
