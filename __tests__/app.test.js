@@ -2,7 +2,7 @@ const endpointsJson = require("../endpoints.json")
 const request = require('supertest')
 const app = require('../api/app')
 const db = require('../db/connection')
-
+const data = require('../db/data/test-data/index')
 afterAll(() => db.end())
 
 describe("GET: /api tests:", () => {
