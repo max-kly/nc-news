@@ -15,3 +15,13 @@ describe("GET: /api tests:", () => {
       });
   });
 });
+describe('/api/topics tests:', () => {
+  test('GET 200: Responds with array of topic objects', () => {
+    return request(app)
+      .get('/api/topics')
+      .expect(200)
+      .then(({ body: { topics } }) => {
+        expect(topics).toEqual(data.topicData)
+      })
+  })
+})
