@@ -6,6 +6,7 @@ const app = express();
 
 app.get('/api', getEndpoints)
 app.get('/api/topics', topics.getTopics)
+app.get('/api/articles', articles.getArticles)
 app.get('/api/articles/:article_id', articles.getArticlesById)
 
 app.use((err, request, response, next) => {

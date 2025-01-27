@@ -75,3 +75,38 @@ describe('/api/articles/:article_id tests:', () => {
       })
   })
 })
+describe('/api/articles tests:', () => {
+  test('GET 200: Responds with array of article objects', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBeGreaterThan(0)
+      })
+  })
+  test('GET 200: Responds with article objects that contain appropriate keys', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        articles.forEach((article) => {
+          expect(article).toHaveProperty('author')
+          expect(article).toHaveProperty('title')
+          expect(article).toHaveProperty('article_id')
+          expect(article).toHaveProperty('topic')
+          expect(article).toHaveProperty('created_at')
+          expect(article).toHaveProperty('votes')
+          expect(article).toHaveProperty('article_img_url')
+          expect(article).toHaveProperty('comment_count')
+        })
+      })
+  })
+  test('GET 200: Responds with article objects sorted by created_at date DESC', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({coerce: true, descending: true, key: 'created_at'})
+      })
+  })
+})
