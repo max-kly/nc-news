@@ -3,6 +3,8 @@ const request = require('supertest')
 const app = require('../api/app')
 const db = require('../db/connection')
 const data = require('../db/data/test-data/index')
+const seed = require('../db/seeds/seed')
+beforeEach(() => seed(data))
 afterAll(() => db.end())
 
 describe("GET: /api tests:", () => {
@@ -22,6 +24,15 @@ describe('/api/topics tests:', () => {
       .expect(200)
       .then(({ body: { topics } }) => {
         expect(topics).toEqual(data.topicData)
+      })
+  })
+  test('GET 200: Responds with topic objects that contain "slug" and "description" keys', () => {
+    return request(app)
+      .get('/api/topics')
+      .expect(200)
+      .then(({ body: { topics } }) => {
+        expect(topics[0]).toHaveProperty('slug')
+        expect(topics[0]).toHaveProperty('description')
       })
   })
 })
