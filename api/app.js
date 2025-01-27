@@ -18,7 +18,6 @@ app.use((err, request, response, next) => {
 })
 app.use((err, request, response, next) => {
     if (err.msg === 'Not found') {
-        console.log(err, '<-- err from app.js')
         response.status(404).send(err)
     }
     else {
