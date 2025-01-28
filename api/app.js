@@ -2,6 +2,7 @@ const { getEndpoints } = require("./controllers/main.controller");
 const topics = require('./controllers/topics.controller')
 const articles = require('./controllers/articles.controller')
 const comments = require('./controllers/comments.controller')
+const users = require('./controllers/users.controller')
 const express = require('express')
 const app = express();
 app.use(express.json());
@@ -14,6 +15,7 @@ app.get('/api/articles/:article_id/comments', comments.getCommentsByArticleID)
 app.post('/api/articles/:article_id/comments', comments.postComment)
 app.patch('/api/articles/:article_id', articles.changeArticleVotes)
 app.delete('/api/comments/:comment_id', comments.deleteComment)
+app.get('/api/users', users.getAllUsers)
 app.use((err, request, response, next) => {
     if (err.code === '22P02' || err.code === '23503') {
         response.status(400).send({ msg: 'Bad request' })
