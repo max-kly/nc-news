@@ -337,3 +337,45 @@ describe('/api/users tests:', () => {
       })
   })
 })
+describe('GET BY QUERY /api/articles test:', () => {
+  test('GET 200: Responds with article objects sorted by comment_count date DESC', () => {
+    return request(app)
+      .get('/api/articles?sort_by=comment_count')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ coerce: true, descending: true, key: 'comment_count' })
+      })
+  })
+  test('GET 200: Responds with article objects sorted by comment_count date ASC', () => {
+    return request(app)
+      .get('/api/articles?sort_by=comment_count&order=ASC')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ coerce: true, ascending: true, key: 'comment_count' })
+      })
+  })
+  test('GET 200: Responds with sorted article objects and case insensitive', () => {
+    return request(app)
+      .get('/api/articles?sort_by=article_id&order=asc')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ coerce: true, ascending: true, key: 'article_id' })
+      })
+  })
+  test('GET 400: Responds with "Bad request" message for invalid sort_by query', () => {
+    return request(app)
+      .get('/api/articles?sort_by=banana')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request')
+      })
+  })
+  test('GET 400: Responds with "Bad request" message for invalid order query', () => {
+    return request(app)
+      .get('/api/articles?sort_by=article_id&order=azs')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request')
+      })
+  })
+})

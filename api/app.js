@@ -17,7 +17,7 @@ app.patch('/api/articles/:article_id', articles.changeArticleVotes)
 app.delete('/api/comments/:comment_id', comments.deleteComment)
 app.get('/api/users', users.getAllUsers)
 app.use((err, request, response, next) => {
-    if (err.code === '22P02' || err.code === '23503') {
+    if (err.code === '22P02' || err.code === '23503' || err.code === '42703' || err.code === '42601') {
         response.status(400).send({ msg: 'Bad request' })
     }
     else {
