@@ -273,6 +273,13 @@ describe('PATCH /api/articles/:article_id tests:', () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toEqual('Bad request')
+        return request(app)
+          .patch('/api/articles/1')
+          .send({ my_key: 'hello' })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toEqual('Bad request')
+          })
       })
   })
 })
