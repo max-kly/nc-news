@@ -11,7 +11,7 @@ function fetchArticleById(article_id) {
     return db.query(sql)
         .then(({ rows }) => {
             if (!rows.length) {
-                return Promise.reject({ msg: 'Not found' })
+                return Promise.reject({ status: 404, msg: 'Article not found' })
             }
             return rows[0]
         })
