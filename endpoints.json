@@ -42,7 +42,7 @@
     "description": "serves an object of article with article details",
     "queries": [],
     "parameters": [
-      "valid id represented as a number"
+      "valid article id represented as a number"
     ],
     "exampleResponse": {
       "article": {
@@ -60,6 +60,9 @@
   "GET /api/articles/:article/comments": {
     "description": "serves an array of all comments for a given article",
     "queries": [],
+    "parameters": [
+      "valid article id represented as a number"
+    ],
     "exampleResponse": {
       "comments": [
         {
@@ -77,6 +80,25 @@
           "author": "icellusedkars",
           "article_id": 3,
           "created_at": 1600560600000
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article/comments": {
+    "description": "adds a new comment to a given article",
+    "queries": [],
+    "parameters": [
+      "valid article id represented as a number"
+    ],
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment_id": 19,
+          "body": "Saved to read later",
+          "votes": 0,
+          "author": "icellusedkars",
+          "article_id": 3,
+          "created_at": 1592641440000
         }
       ]
     }
