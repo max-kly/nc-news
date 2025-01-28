@@ -22,14 +22,14 @@ function changeArticleVotes(request, response, next) {
     const { article_id } = request.params
     const { inc_votes } = request.body
     fetchArticleById(article_id)
+        .then(() => {
+            return updateArticleVotes(article_id, inc_votes)
+        })
+        .catch((err) => {
+            next(err)
+        })
         .then((article) => {
-            updateArticleVotes(article_id, inc_votes, article.votes)
-                .then((article) => {
-                    response.status(200).send({ article })
-                })
-                .catch((err) => {
-                    next(err)
-                })
+            response.status(200).send({ article })
         })
         .catch((err) => {
             next(err)
