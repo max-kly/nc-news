@@ -218,7 +218,7 @@ describe('/api/articles/:article_id/comments tests:', () => {
       })
   })
 })
-describe('PATCH /api/articles/:article_id', () => {
+describe('PATCH /api/articles/:article_id tests:', () => {
   test('PATCH 200: Responds with article and increased votes', () => {
     return request(app)
       .patch('/api/articles/1')
@@ -273,6 +273,37 @@ describe('PATCH /api/articles/:article_id', () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toEqual('Bad request')
+      })
+  })
+})
+describe('DELETE /api/comments/:comment_id tests:', () => {
+  test('DELETE 404: Responds with "Comment not found" message for non-existing comment', () => {
+    return request(app)
+      .delete('/api/comments/103030')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Comment not found')
+      })
+  })
+  test('DELETE 202: Removes a comment from DB', () => {
+    return request(app)
+      .delete('/api/comments/1')
+      .expect(202)
+      .then(() => {
+        return request(app)
+          .delete('/api/comments/1')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Comment not found')
+          })
+      })
+  })
+  test('DELETE 400: Responds with "Bad request" message for invalid comment id', () => {
+    return request(app)
+      .delete('/api/comments/banana')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request')
       })
   })
 })
