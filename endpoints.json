@@ -56,5 +56,29 @@
         "article_img_url": "https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700"
       }
     }
+  },
+  "GET /api/articles/:article/comments": {
+    "description": "serves an array of all comments for a given article",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 10,
+          "body": "git push origin master",
+          "votes": 0,
+          "author": "icellusedkars",
+          "article_id": 3,
+          "created_at": 1592641440000
+        },
+        {
+          "comment_id": 11,
+          "body": "Ambidextrous marsupial",
+          "votes": 0,
+          "author": "icellusedkars",
+          "article_id": 3,
+          "created_at": 1600560600000
+        }
+      ]
+    }
   }
 }
