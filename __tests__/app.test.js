@@ -193,7 +193,7 @@ describe('/api/articles/:article_id/comments tests:', () => {
   test('POST 400: Responds with a "Bad request" message for invalid body/key', () => {
     return request(app)
       .post('/api/articles/1/comments')
-      .send({ username: 'icellusedkars'})
+      .send({ username: 'icellusedkars' })
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Bad request')
@@ -215,6 +215,64 @@ describe('/api/articles/:article_id/comments tests:', () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Bad request')
+      })
+  })
+})
+describe('PATCH /api/articles/:article_id', () => {
+  test('PATCH 200: Responds with article and increased votes', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({ inc_votes: 25 })
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 125,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+      })
+  })
+  test('PATCH 200: Responds with article and decreased votes', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({ inc_votes: -25 })
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 75,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+      })
+  })
+  test('PATCH 404: Responds with "Article not found" message for non-exisiting articles', () => {
+    return request(app)
+      .patch('/api/articles/103030')
+      .send({ inc_votes: 25 })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual('Article not found')
+      })
+  })
+  test('PATCH 400: Responds with "Bad request" message for unacceptable or missing key', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({ inc_votes: 'twenty-five' })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual('Bad request')
       })
   })
 })

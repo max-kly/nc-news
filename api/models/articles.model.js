@@ -16,4 +16,14 @@ function fetchArticleById(article_id) {
             return rows[0]
         })
 }
-module.exports = { fetchArticles, fetchArticleById }
+function updateArticleVotes(article_id, amount, currentVotes) {
+    if (!amount || typeof amount !== 'number') {
+        return Promise.reject({ status: 400, msg: 'Bad request' })
+    }
+    const newVoteCount = currentVotes + amount
+    return db.query('UPDATE articles SET votes = $1 WHERE article_id = $2 RETURNING *', [newVoteCount, article_id])
+        .then(({ rows }) => {
+            return rows[0]
+        })
+}
+module.exports = { fetchArticles, fetchArticleById, updateArticleVotes }
