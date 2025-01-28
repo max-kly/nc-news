@@ -13,7 +13,7 @@ app.get('/api/articles/:article_id', articles.getArticlesById)
 app.get('/api/articles/:article_id/comments', comments.getCommentsByArticleID)
 app.post('/api/articles/:article_id/comments', comments.postComment)
 app.patch('/api/articles/:article_id', articles.changeArticleVotes)
-
+app.delete('/api/comments/:comment_id', comments.deleteComment)
 app.use((err, request, response, next) => {
     if (err.code === '22P02' || err.code === '23503') {
         response.status(400).send({ msg: 'Bad request' })
