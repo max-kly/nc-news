@@ -130,5 +130,12 @@
         }
       ]
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes comment by a given comment_id",
+    "queries": [],
+    "parameters": [
+      "valid comment id represented as a number"
+    ]
   }
 }
