@@ -168,4 +168,53 @@ describe('/api/articles/:article_id/comments tests:', () => {
         expect(msg).toBe('Bad request')
       })
   })
+  test('POST 201: Responds with an object of added comment after successful post', () => {
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send({ username: 'icellusedkars', body: 'Saved to read later, thx!' })
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment.comment_id).toEqual(19)
+        expect(comment.body).toEqual('Saved to read later, thx!')
+        expect(comment.votes).toEqual(0)
+        expect(comment.author).toEqual('icellusedkars')
+        expect(comment.article_id).toEqual(1)
+      })
+  })
+  test('POST 400: Responds with a "Bad request" message for invalid article id', () => {
+    return request(app)
+      .post('/api/articles/article/comments')
+      .send({ username: 'icellusedkars', body: 'Saved to read later, thx!' })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request')
+      })
+  })
+  test('POST 400: Responds with a "Bad request" message for invalid body/key', () => {
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send({ username: 'icellusedkars'})
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request')
+      })
+  })
+  test('POST 404: Responds with a "Article not found" message for non-existing article', () => {
+    return request(app)
+      .post('/api/articles/13893893/comments')
+      .send({ username: 'icellusedkars', body: 'Saved to read later, thx!' })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Article not found')
+      })
+  })
+  test('POST 400: Responds with a "User not found" message for non-existing username', () => {
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send({ username: 'maxkly', body: 'Saved to read later, thx!' })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request')
+      })
+  })
 })
