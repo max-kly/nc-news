@@ -285,10 +285,10 @@ describe('DELETE /api/comments/:comment_id tests:', () => {
         expect(msg).toBe('Comment not found')
       })
   })
-  test('DELETE 202: Removes a comment from DB', () => {
+  test('DELETE 204: Removes a comment from DB', () => {
     return request(app)
       .delete('/api/comments/1')
-      .expect(202)
+      .expect(204)
       .then(() => {
         return request(app)
           .delete('/api/comments/1')
