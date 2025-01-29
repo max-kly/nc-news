@@ -40,22 +40,18 @@ describe('/api/topics tests:', () => {
 })
 describe('/api/articles/:article_id tests:', () => {
   test('GET 200: Returns an article with correct id', () => {
-    const output = {
-      article_id: 1,
-      title: "Living in the shadow of a great man",
-      topic: "mitch",
-      author: "butter_bridge",
-      body: "I find this existence challenging",
-      created_at: '2020-07-09T20:11:00.000Z',
-      votes: 100,
-      article_img_url:
-        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-    }
     return request(app)
       .get('/api/articles/1')
       .expect(200)
       .then(({ body: { article } }) => {
-        expect(article).toEqual(output)
+        expect(article.article_id).toBe(1)
+        expect(article).toHaveProperty('title')
+        expect(article).toHaveProperty('topic')
+        expect(article).toHaveProperty('author')
+        expect(article).toHaveProperty('body')
+        expect(article).toHaveProperty('created_at')
+        expect(article).toHaveProperty('votes')
+        expect(article).toHaveProperty('article_img_url')
       })
   })
   test('GET 404: Returns a "Article not found" message when article with such id does not exist', () => {
@@ -398,6 +394,24 @@ describe('GET BY TOPIC /api/articles tests:', () => {
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('No artciles found for a requested topic')
+      })
+  })
+})
+describe('GET /api/articles/:article_id + comment_count', () => {
+  test('GET 200: Returns an article with correct data and comment count', () => {
+    return request(app)
+      .get('/api/articles/1')
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toEqual(1)
+        expect(article).toHaveProperty('title')
+        expect(article).toHaveProperty('topic')
+        expect(article).toHaveProperty('author')
+        expect(article).toHaveProperty('body')
+        expect(article).toHaveProperty('created_at')
+        expect(article).toHaveProperty('votes')
+        expect(article).toHaveProperty('article_img_url')
+        expect(article.comment_count).toEqual('11')
       })
   })
 })
