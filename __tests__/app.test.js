@@ -315,20 +315,12 @@ describe('DELETE /api/comments/:comment_id tests:', () => {
   })
 })
 describe('/api/users tests:', () => {
-  test('GET 200: Responds with an array of all users', () => {
+  test('GET 200: Responds with an array all users and required keys in object', () => {
     return request(app)
       .get('/api/users')
       .expect(200)
       .then(({ body: { users } }) => {
         expect(users.length).toBe(4)
-      })
-  })
-  test('GET 200: Responds with an array user objects and required keys in object', () => {
-    return request(app)
-      .get('/api/users')
-      .expect(200)
-      .then(({ body: { users } }) => {
-        expect(users.length).toBeGreaterThan(0)
         users.forEach((user) => {
           expect(user).toHaveProperty('username')
           expect(user).toHaveProperty('name')
@@ -337,7 +329,7 @@ describe('/api/users tests:', () => {
       })
   })
 })
-describe('GET BY QUERY /api/articles test:', () => {
+describe('GET BY QUERY /api/articles tests:', () => {
   test('GET 200: Responds with article objects sorted by comment_count date DESC', () => {
     return request(app)
       .get('/api/articles?sort_by=comment_count')
@@ -376,6 +368,36 @@ describe('GET BY QUERY /api/articles test:', () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Bad request')
+      })
+  })
+})
+describe('GET BY TOPIC /api/articles tests:', () => {
+  test('GET 200: Responds with article objects from a specific topic and sorted by comments count', () => {
+    return request(app)
+      .get('/api/articles?sort_by=comment_count&topic=cats')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ coerce: true, descending: true, key: 'comment_count' })
+        expect(articles.length).toBeGreaterThan(0)
+        articles.forEach((article) => {
+          expect(article.topic).toBe('cats')
+        })
+      })
+  })
+  test('GET 200: Responds with an array containing all article objects from any topic if topic was not specified', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(13)
+      })
+  })
+  test('GET 404: Responds with "No articles found" message for non-existing topic query', () => {
+    return request(app)
+      .get('/api/articles?topic=banana')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('No artciles found for a requested topic')
       })
   })
 })

@@ -2,7 +2,8 @@ const { fetchArticles, fetchArticleById, updateArticleVotes } = require('../mode
 function getArticles(request, response, next) {
     const { sort_by } = request.query
     const { order } = request.query
-    fetchArticles(sort_by, order)
+    const { topic } = request.query
+    fetchArticles(sort_by, order, topic)
         .then((articles) => {
             response.status(200).send({ articles })
         })
