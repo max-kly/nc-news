@@ -435,3 +435,62 @@ describe('GET /api/users/:username tests:', () => {
       })
   })
 })
+describe('PATCH /api/comments/:comment_id tests:', () => {
+  test('PATCH 200: Responds with comment and increased votes', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({ inc_votes: 25 })
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 41,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: '2020-04-06T12:17:00.000Z',
+        })
+      })
+  })
+  test('PATCH 200: Responds with comment and decreased votes', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({ inc_votes: -10 })
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 6,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: '2020-04-06T12:17:00.000Z',
+        })
+      })
+  })
+  test('PATCH 404: Responds with "Comment not found" message for non-exisiting comment', () => {
+    return request(app)
+      .patch('/api/comments/103030')
+      .send({ inc_votes: 25 })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual('Comment not found')
+      })
+  })
+  test('PATCH 400: Responds with "Bad request" message for unacceptable or missing key', () => {
+    return request(app)
+      .patch('/api/comments/1')
+      .send({ inc_votes: 'twenty-five' })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual('Bad request')
+        return request(app)
+          .patch('/api/articles/1')
+          .send({ my_key: 'hello' })
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toEqual('Bad request')
+          })
+      })
+  })
+})
