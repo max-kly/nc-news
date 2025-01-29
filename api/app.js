@@ -3,19 +3,13 @@ const topics = require('./controllers/topics.controller')
 const articles = require('./controllers/articles.controller')
 const comments = require('./controllers/comments.controller')
 const users = require('./controllers/users.controller')
-const express = require('express')
+const express = require('express');
+const apiRouter = require("./routers/api.router");
 const app = express();
 app.use(express.json());
 
-app.get('/api', getEndpoints)
-app.get('/api/topics', topics.getTopics)
-app.get('/api/articles', articles.getArticles)
-app.get('/api/articles/:article_id', articles.getArticlesById)
-app.get('/api/articles/:article_id/comments', comments.getCommentsByArticleID)
-app.post('/api/articles/:article_id/comments', comments.postComment)
-app.patch('/api/articles/:article_id', articles.changeArticleVotes)
-app.delete('/api/comments/:comment_id', comments.deleteComment)
-app.get('/api/users', users.getAllUsers)
+app.use('/api', apiRouter)
+
 app.use((err, request, response, next) => {
     if (err.code === '22P02' || err.code === '23503' || err.code === '42703' || err.code === '42601') {
         response.status(400).send({ msg: 'Bad request' })
