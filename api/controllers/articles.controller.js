@@ -1,4 +1,4 @@
-const { fetchArticles, fetchArticleById, updateArticleVotes } = require('../models/articles.model.js')
+const { fetchArticles, fetchArticleById, updateArticleVotes, fetchCommentsByArticleID, addComment } = require('../models/articles.model.js')
 function getArticles(request, response, next) {
     const { sort_by } = request.query
     const { order } = request.query
@@ -27,15 +27,51 @@ function changeArticleVotes(request, response, next) {
     fetchArticleById(article_id)
         .then(() => {
             return updateArticleVotes(article_id, inc_votes)
+                .then((article) => {
+                    response.status(200).send({ article })
+                })
+                .catch((err) => {
+                    next(err)
+                })
         })
         .catch((err) => {
             next(err)
         })
-        .then((article) => {
-            response.status(200).send({ article })
+
+}
+function getCommentsByArticleID(request, response, next) {
+    const { article_id } = request.params
+    fetchArticleById(article_id)
+        .then(() => {
+            fetchCommentsByArticleID(article_id)
+                .then((comments) => {
+                    response.status(200).send({ comments })
+                })
+                .catch((err) => {
+                    next(err)
+                })
         })
         .catch((err) => {
             next(err)
         })
 }
-module.exports = { getArticles, getArticlesById, changeArticleVotes }
+function postComment(request, response, next) {
+    const { article_id } = request.params
+    const { username } = request.body
+    const { body } = request.body
+    fetchArticleById(article_id)
+        .then(() => {
+            addComment(article_id, username, body)
+                .then(({ rows }) => {
+                    response.status(201).send({ comment: rows[0] })
+                })
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
+}
+
+module.exports = { getArticles, getArticlesById, changeArticleVotes, getCommentsByArticleID, postComment }
