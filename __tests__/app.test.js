@@ -415,3 +415,23 @@ describe('GET /api/articles/:article_id + comment_count', () => {
       })
   })
 })
+describe('GET /api/users/:username tests:', () => {
+  test('GET 200: Returns a user with correct username and properties', () => {
+    return request(app)
+      .get('/api/users/butter_bridge')
+      .expect(200)
+      .then(({ body: { user } }) => {
+        expect(user.username).toBe('butter_bridge')
+        expect(user).toHaveProperty('name')
+        expect(user).toHaveProperty('avatar_url')
+      })
+  })
+  test('GET 404: Returns a "User not found" message when user with such username does not exist', () => {
+    return request(app)
+      .get('/api/users/maxkly')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('User not found')
+      })
+  })
+})
