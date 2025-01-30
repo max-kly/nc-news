@@ -1,4 +1,4 @@
-const { fetchArticles, fetchArticleById, updateArticleVotes, fetchCommentsByArticleID, addComment } = require('../models/articles.model.js')
+const { fetchArticles, fetchArticleById, updateArticleVotes, fetchCommentsByArticleID, addComment, addNewArticle } = require('../models/articles.model.js')
 function getArticles(request, response, next) {
     const { sort_by } = request.query
     const { order } = request.query
@@ -73,5 +73,21 @@ function postComment(request, response, next) {
             next(err)
         })
 }
+function postArticle(request, response, next) {
+    const { author, title, body, topic, article_img_url } = request.body
+    addNewArticle(author, title, body, topic, article_img_url)
+        .then((article) => {
+            return fetchArticleById(article.article_id)
+                .then((article) => {
+                    response.status(201).send({ article })
+                })
+                .catch((err) => {
+                    next(err)
+                })
+        })
+        .catch((err) => {
+            next(err)
+        })
+}
 
-module.exports = { getArticles, getArticlesById, changeArticleVotes, getCommentsByArticleID, postComment }
+module.exports = { getArticles, getArticlesById, changeArticleVotes, getCommentsByArticleID, postComment, postArticle }

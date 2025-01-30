@@ -38,6 +38,29 @@
       ]
     }
   },
+  "POST /api/articles": {
+    "description": "adds a new article returning an article",
+    "body": [
+      "author",
+      "title",
+      "body",
+      "topic",
+      "article_img_url"
+    ],
+    "exampleResponse": {
+      "article": {
+        "article_id": 14,
+        "title": "Routing",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "Today we will learn more about routing",
+        "created_at": "2025-01-30T11:07:05.661Z",
+        "votes": 0,
+        "article_img_url": "https://media.licdn.com/dms/image/D4E12AQEBg943ptCYpg/article-cover_image-shrink_720_1280/0/1686391647921?e=2147483647&v=beta&t=sTfwUvcIfW7Fuby7hMluDfuRJK3HfYMMWc2SyZR7-GA",
+        "comment_count": 0
+      }
+    }
+  },
   "GET /api/articles/:article_id": {
     "description": "serves an object of article with article details",
     "queries": [],
