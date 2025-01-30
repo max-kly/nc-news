@@ -85,7 +85,10 @@
   },
   "GET /api/articles/:article/comments": {
     "description": "serves an array of all comments for a given article",
-    "queries": [],
+    "queries": [
+      "page",
+      "limit"
+    ],
     "parameters": [
       "valid article id represented as a number"
     ],

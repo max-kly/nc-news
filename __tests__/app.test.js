@@ -108,12 +108,12 @@ describe('/api/articles tests:', () => {
   })
 })
 describe('/api/articles/:article_id/comments tests:', () => {
-  test('GET 200: Responds with array of comments for given article', () => {
+  test('GET 200: Responds with array of comments for given article LIMIT 10', () => {
     return request(app)
       .get('/api/articles/1/comments')
       .expect(200)
       .then(({ body: { comments } }) => {
-        expect(comments.length).toBe(11)
+        expect(comments.length).toBe(10)
       })
   })
   test('GET 200: Responds with array of comment objects that contain required properties', () => {
@@ -151,9 +151,9 @@ describe('/api/articles/:article_id/comments tests:', () => {
   test('GET 200: Responds with empty array for article without comments', () => {
     return request(app)
       .get('/api/articles/2/comments')
-      .expect(200)
-      .then(({ body: { comments } }) => {
-        expect(comments).toEqual([])
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('No content: Search constraints are out of range')
       })
   })
   test('GET 400: Responds with "Bad request" for invalid article param', () => {
@@ -560,7 +560,7 @@ describe('POST /api/articles tests:', () => {
     })
   })
 })
-describe('Pagination GET /api/articles test:', () => {
+describe('Pagination GET /api/articles tests:', () => {
   test('GET 200: Responds with articles 0-10 for default limit & first page', () => {
     return request(app)
       .get('/api/articles?page=1&sort_by=article_id&order=asc')
@@ -581,7 +581,7 @@ describe('Pagination GET /api/articles test:', () => {
   })
   test('GET 200: Responds with articles 0-15 for limit = 15 & page 1', () => {
     return request(app)
-      .get('/api/articles??page=1&limit=15&sort_by=article_id&order=asc')
+      .get('/api/articles?page=1&limit=15&sort_by=article_id&order=asc')
       .expect(200)
       .then(({ body: { articles } }) => {
         expect(articles.length).toBe(13)
@@ -599,6 +599,48 @@ describe('Pagination GET /api/articles test:', () => {
   test('GET 404: Responds with "No content: Search constraints are out of range"', () => {
     return request(app)
       .get('/api/articles?page=300')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('No content: Search constraints are out of range')
+      })
+  })
+})
+describe('Pagination GET /api/articles/:article_id/comments tests:', () => {
+  test('GET 200: Responds with comments 0-10 for default limit & first page', () => {
+    return request(app)
+      .get('/api/articles/1/comments?page=1')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(10)
+      })
+  })
+  test('GET 200: Responds with 11th comment for default limit & second page', () => {
+    return request(app)
+      .get('/api/articles/1/comments?page=2')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(1)
+      })
+  })
+  test('GET 200: Responds with comments 0-11 for limit = 15 & page 1', () => {
+    return request(app)
+      .get('/api/articles/1/comments?page=1&limit=15')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(11)
+      })
+  })
+  test('GET 400: Responds with "Bad request" message if invalid query was provided', () => {
+    return request(app)
+      .get('/api/articles/1/comments?page=one')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request')
+      })
+  })
+  test('GET 404: Responds with "No content: Search constraints are out of range"', () => {
+    return request(app)
+      .get('/api/articles/1/comments?page=300')
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('No content: Search constraints are out of range')

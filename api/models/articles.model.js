@@ -27,9 +27,13 @@ function fetchArticleById(article_id) {
             return rows[0]
         })
 }
-function fetchCommentsByArticleID(article_id) {
-    return db.query('SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC', [article_id])
+function fetchCommentsByArticleID(article_id, page = 1, limit = 10) {
+    const offset = (page - 1) * limit
+    return db.query('SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC OFFSET $2 LIMIT $3', [article_id, offset, limit])
         .then(({ rows }) => {
+            if (!rows.length && page) {
+                return Promise.reject({ status: 404, msg: 'No content: Search constraints are out of range' })
+            }
             return rows
         })
 

@@ -39,9 +39,10 @@ function changeArticleVotes(request, response, next) {
 }
 function getCommentsByArticleID(request, response, next) {
     const { article_id } = request.params
+    const { page, limit } = request.query
     fetchArticleById(article_id)
         .then(() => {
-            fetchCommentsByArticleID(article_id)
+            fetchCommentsByArticleID(article_id, page, limit)
                 .then((comments) => {
                     response.status(200).send({ comments })
                 })
