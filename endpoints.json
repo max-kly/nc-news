@@ -14,6 +14,22 @@
       ]
     }
   },
+  "POST /api/topics": {
+    "description": "adds a new topic",
+    "queries": [],
+    "body": {
+      "slug": "New topic",
+      "description": "Description of a new topic"
+    },
+    "exampleResponse": {
+      "topics": [
+        {
+          "slug": "football",
+          "description": "Footie!"
+        }
+      ]
+    }
+  },
   "GET /api/articles": {
     "description": "serves an array of all articles",
     "queries": [
