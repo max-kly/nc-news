@@ -647,3 +647,35 @@ describe('Pagination GET /api/articles/:article_id/comments tests:', () => {
       })
   })
 })
+describe('POST /api/topics', () => {
+  test('POST 201: Returns newly added topic', () => {
+    return request(app)
+      .post('/api/topics')
+      .send({ slug: 'My new topic', description: 'What can I say?' })
+      .expect(201)
+      .then(({ body: { topic } }) => {
+        expect(topic).toEqual({ slug: 'My new topic', description: 'What can I say?' })
+      })
+  })
+  test('POST 409: Returns "Topic already exists" message and avoids duplicates', () => {
+    return request(app)
+      .post('/api/topics')
+      .send({
+        description: 'The man, the Mitch, the legend',
+        slug: 'mitch'
+      })
+      .expect(409)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Topic already exists')
+      })
+  })
+  test('POST 400: Returns "Bad request: required fields are missing" message if any fields missing', () => {
+    return request(app)
+      .post('/api/topics')
+      .send({ description: 'What can I say?' })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request: required fields are missing')
+      })
+  })
+})
