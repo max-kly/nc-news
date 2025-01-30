@@ -380,12 +380,12 @@ describe('GET BY TOPIC /api/articles tests:', () => {
         })
       })
   })
-  test('GET 200: Responds with an array containing all article objects from any topic if topic was not specified', () => {
+  test('GET 200: Responds with an array containing all article objects from any topic if topic was not specified LIMIT 10', () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
       .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13)
+        expect(articles.length).toBe(10)
       })
   })
   test('GET 404: Responds with "No articles found" message for non-existing topic query', () => {
@@ -558,5 +558,50 @@ describe('POST /api/articles tests:', () => {
           expect(msg).toBe('Bad request, required fields are missing')
         })
     })
+  })
+})
+describe('Pagination GET /api/articles test:', () => {
+  test('GET 200: Responds with articles 0-10 for default limit & first page', () => {
+    return request(app)
+      .get('/api/articles?page=1&sort_by=article_id&order=asc')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(10)
+        expect(articles[9].title).toBe('Seven inspirational thought leaders from Manchester UK')
+      })
+  })
+  test('GET 200: Responds with articles 11-13 for default limit & second page', () => {
+    return request(app)
+      .get('/api/articles?page=2&sort_by=article_id&order=asc')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(3)
+        expect(articles[0].title).toBe('Am I a cat?')
+      })
+  })
+  test('GET 200: Responds with articles 0-15 for limit = 15 & page 1', () => {
+    return request(app)
+      .get('/api/articles??page=1&limit=15&sort_by=article_id&order=asc')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(13)
+        expect(articles[12].title).toBe('Another article about Mitch')
+      })
+  })
+  test('GET 400: Responds with "Bad request" message if invalid query was provided', () => {
+    return request(app)
+      .get('/api/articles?page=eleven')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request')
+      })
+  })
+  test('GET 404: Responds with "No content: Search constraints are out of range"', () => {
+    return request(app)
+      .get('/api/articles?page=300')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('No content: Search constraints are out of range')
+      })
   })
 })
