@@ -494,3 +494,69 @@ describe('PATCH /api/comments/:comment_id tests:', () => {
       })
   })
 })
+describe('POST /api/articles tests:', () => {
+  test('POST 201: Responds with recently added article', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({ author: 'butter_bridge', title: 'Routing', body: 'Today we will learn more about routing', topic: 'mitch', article_img_url: 'https://media.licdn.com/dms/image/D4E12AQEBg943ptCYpg/article-cover_image-shrink_720_1280/0/1686391647921?e=2147483647&v=beta&t=sTfwUvcIfW7Fuby7hMluDfuRJK3HfYMMWc2SyZR7-GA' })
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article.author).toBe('butter_bridge')
+        expect(article.title).toBe('Routing')
+        expect(article.body).toBe('Today we will learn more about routing')
+        expect(article.topic).toBe('mitch')
+        expect(article.article_img_url).toBe('https://media.licdn.com/dms/image/D4E12AQEBg943ptCYpg/article-cover_image-shrink_720_1280/0/1686391647921?e=2147483647&v=beta&t=sTfwUvcIfW7Fuby7hMluDfuRJK3HfYMMWc2SyZR7-GA')
+        expect(article.votes).toBe(0)
+        expect(article.comment_count).toBe("0")
+        expect(article).toHaveProperty('article_id')
+        expect(article).toHaveProperty('created_at')
+      })
+  })
+  test('POST 201: Responds with new article and sets default image if not provided', () => {
+    return request(app)
+      .post('/api/articles')
+      .send({ author: 'butter_bridge', title: 'Routing', body: 'Today we will learn more about routing', topic: 'mitch' })
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
+      })
+  })
+  describe('POST 400: Responds with error message if any of required fields are missing', () => {
+    test('POST 400 for missing author', () => {
+      return request(app)
+        .post('/api/articles')
+        .send({ title: 'Routing', body: 'Today we will learn more about routing', topic: 'mitch' })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad request, required fields are missing')
+        })
+    })
+    test('POST 400 for missing title', () => {
+      return request(app)
+        .post('/api/articles')
+        .send({ author: 'butter_bridge', body: 'Today we will learn more about routing', topic: 'mitch' })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad request, required fields are missing')
+        })
+    })
+    test('POST 400 for missing body', () => {
+      return request(app)
+        .post('/api/articles')
+        .send({ author: 'butter_bridge', title: 'Routing', topic: 'mitch' })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad request, required fields are missing')
+        })
+    })
+    test('POST 400 for missing topic', () => {
+      return request(app)
+        .post('/api/articles')
+        .send({ author: 'butter_bridge', title: 'Routing', body: 'Today we will learn more about routing' })
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Bad request, required fields are missing')
+        })
+    })
+  })
+})
