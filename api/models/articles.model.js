@@ -8,7 +8,7 @@ function fetchArticles(sort_by, order, topic) {
     return db.query(sql)
         .then(({ rows }) => {
             if (!rows.length && topic !== undefined) {
-                return Promise.reject({status: 404, msg: 'No artciles found for a requested topic'})
+                return Promise.reject({ status: 404, msg: 'No artciles found for a requested topic' })
             }
             return rows
         })
@@ -48,4 +48,15 @@ function addComment(article_id, username, body) {
             return result
         })
 }
-module.exports = { fetchArticles, fetchArticleById, updateArticleVotes, fetchCommentsByArticleID, addComment }
+function addNewArticle(author, title, body, topic, article_img_url) {
+    if (!author || !title || !body || !topic) {
+        return Promise.reject({ status: 400, msg: 'Bad request, required fields are missing' })
+    }
+    const articleImg = !article_img_url ? 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700' : article_img_url;
+    return db.query('INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES ($1, $2, $3, $4, NOW(), 0, $5) RETURNING *', [title, topic, author, body, articleImg])
+        .then(({ rows }) => {
+            return rows[0]
+        })
+}
+
+module.exports = { fetchArticles, fetchArticleById, updateArticleVotes, fetchCommentsByArticleID, addComment, addNewArticle }
