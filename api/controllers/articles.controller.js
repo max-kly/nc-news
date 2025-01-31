@@ -1,4 +1,5 @@
-const { fetchArticles, fetchArticleById, updateArticleVotes, fetchCommentsByArticleID, addComment, addNewArticle } = require('../models/articles.model.js')
+const { fetchArticles, fetchArticleById, updateArticleVotes, fetchCommentsByArticleID, addComment, addNewArticle, removeArticle } = require('../models/articles.model.js')
+const { deleteAllCommentsByArticleID } = require('../models/comments.model.js')
 function getArticles(request, response, next) {
     const { sort_by, order, topic, page, limit } = request.query
     fetchArticles(sort_by, order, topic, limit, page)
@@ -88,5 +89,25 @@ function postArticle(request, response, next) {
             next(err)
         })
 }
+function deleteArticle(request, response, next) {
+    const { article_id } = request.params
+    fetchArticleById(article_id)
+        .then(() => {
+            deleteAllCommentsByArticleID(article_id)
+            .then(() => {
+                removeArticle(article_id)
+                .then(() => {
+                    response.status(204).send()
+                })
+                .catch((err) => {
+                    next(err)
+                })
+            })
+            
+        })
+        .catch((err) => {
+            next(err)
+        })
+}
 
-module.exports = { getArticles, getArticlesById, changeArticleVotes, getCommentsByArticleID, postComment, postArticle }
+module.exports = { getArticles, getArticlesById, changeArticleVotes, getCommentsByArticleID, postComment, postArticle, deleteArticle }

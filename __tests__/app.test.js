@@ -679,3 +679,34 @@ describe('POST /api/topics', () => {
       })
   })
 })
+describe('DELETE /api/articles/:article_id tests:', () => {
+  test('DELETE 404: Responds with "Article not found" message for non-existing article', () => {
+    return request(app)
+      .delete('/api/articles/103030')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Article not found')
+      })
+  })
+  test('DELETE 204: Removes article from DB', () => {
+    return request(app)
+      .delete('/api/articles/1')
+      .expect(204)
+      .then(() => {
+        return request(app)
+          .delete('/api/articles/1')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Article not found')
+          })
+      })
+  })
+  test('DELETE 400: Responds with "Bad request" message for invalid article id', () => {
+    return request(app)
+      .delete('/api/articles/one')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad request')
+      })
+  })
+})

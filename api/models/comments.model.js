@@ -21,5 +21,7 @@ function changeCommentVotes(comment_id, amount) {
             return rows[0]
         })
 }
-
-module.exports = { removeComment, fetchCommentById, changeCommentVotes }
+function deleteAllCommentsByArticleID(article_id) {
+    return db.query('DELETE FROM comments WHERE article_id = $1', [article_id])
+}
+module.exports = { removeComment, fetchCommentById, changeCommentVotes, deleteAllCommentsByArticleID }
