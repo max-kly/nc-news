@@ -99,6 +99,13 @@
       }
     }
   },
+  "DELETE /api/articles/:article_id": {
+    "description": "removes article by given id and removes all related comments to it",
+    "queries": [],
+    "parameters": [
+      "valid article id represented as a number"
+    ]
+  },
   "GET /api/articles/:article/comments": {
     "description": "serves an array of all comments for a given article",
     "queries": [
