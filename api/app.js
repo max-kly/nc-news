@@ -1,8 +1,4 @@
-const { getEndpoints } = require("./controllers/main.controller");
-const topics = require('./controllers/topics.controller')
-const articles = require('./controllers/articles.controller')
-const comments = require('./controllers/comments.controller')
-const users = require('./controllers/users.controller')
+const noSleep = require('./noSleep')
 const express = require('express');
 const apiRouter = require("./routers/api.router");
 const cors = require('cors')
@@ -31,5 +27,5 @@ app.use((err, request, response, next) => {
 app.use((err, request, response, next) => {
     response.status(500).send(err)
 })
-
+noSleep()
 module.exports = app
