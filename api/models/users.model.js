@@ -9,9 +9,18 @@ function fetchUser(username) {
     return db.query('SELECT * FROM users WHERE username = $1', [username])
         .then(({ rows }) => {
             if (!rows.length) {
-                return Promise.reject({status: 404, msg: 'User not found'})
+                return Promise.reject({ status: 404, msg: 'User not found' })
             }
             return rows[0]
         })
 }
-module.exports = { fetchAllUsers, fetchUser }
+function findUser(username, password) {
+    return db.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password])
+        .then(({ rows }) => {
+            if (!rows.length) {
+                return Promise.reject({ status: 404, msg: 'Invalid username or password' })
+            }
+            return { msg: 'User was found, credentials are valid' }
+        })
+}
+module.exports = { fetchAllUsers, fetchUser, findUser }
