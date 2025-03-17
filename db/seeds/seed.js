@@ -4,6 +4,7 @@ const {
   convertTimestampToDate,
   createRef,
   formatComments,
+  hashPassword
 } = require('./utils');
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
@@ -70,7 +71,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         'INSERT INTO users ( username, password, name, avatar_url) VALUES %L;',
         userData.map(({ username, password, name, avatar_url }) => [
           username,
-          password,
+          hashPassword(password),
           name,
           avatar_url,
         ])
