@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const db = require('../../db/connection')
 function fetchAllUsers() {
     return db.query('SELECT * FROM users')
@@ -15,12 +16,12 @@ function fetchUser(username) {
         })
 }
 function findUser(username, password) {
-    return db.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password])
+    return db.query('SELECT * FROM users WHERE username = $1', [username])
         .then(({ rows }) => {
             if (!rows.length) {
                 return Promise.reject({ status: 404, msg: 'Invalid username or password' })
             }
-            return { msg: 'User was found, credentials are valid' }
+            return bcrypt.compareSync(password, rows[0].password) ? { msg: 'User was found, credentials are valid' } : Promise.reject({ status: 404, msg: 'Invalid username or password' })
         })
 }
 module.exports = { fetchAllUsers, fetchUser, findUser }

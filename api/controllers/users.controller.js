@@ -21,6 +21,7 @@ function getUserByUsername(request, response, next) {
 }
 function loginUser(request, response, next) {
     const { username, password } = request.query
+    if (!username || !password) next({ status: 404, msg: 'Invalid username or password' })
     findUser(username, password)
         .then((msg) => {
             response.status(200).send(msg)
