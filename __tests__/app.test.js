@@ -719,4 +719,28 @@ describe('Users endpoints tests:', () => {
         })
     })
   })
+  describe('GET /api/users/login tests:', () => {
+    test('Get 200: Returns "User was found, credentials are valid" message', () => {
+      return request(app)
+        .get('/api/users/login?username=lurker&password=lurker111')
+        .expect(200)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('User was found, credentials are valid')
+        })
+    })
+    test('Get 404: Returns "Invalid username or password" message', () => {
+      return request(app)
+        .get('/api/users/login?username=lurker&password=lurker12111')
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe('Invalid username or password')
+          return request(app)
+            .get('/api/users/login?username=lurker')
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Invalid username or password')
+            })
+        })
+    })
+  })
 })

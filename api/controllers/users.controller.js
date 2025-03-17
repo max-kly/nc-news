@@ -1,4 +1,4 @@
-const { fetchAllUsers, fetchUser } = require("../models/users.model")
+const { fetchAllUsers, fetchUser, findUser } = require("../models/users.model")
 
 function getAllUsers(request, response, next) {
     fetchAllUsers()
@@ -19,4 +19,15 @@ function getUserByUsername(request, response, next) {
             next(err)
         })
 }
-module.exports = { getAllUsers, getUserByUsername }
+function loginUser(request, response, next) {
+    const { username, password } = request.query
+    if (!username || !password) next({ status: 404, msg: 'Invalid username or password' })
+    findUser(username, password)
+        .then((msg) => {
+            response.status(200).send(msg)
+        })
+        .catch((err) => {
+            next(err)
+        })
+}
+module.exports = { getAllUsers, getUserByUsername, loginUser }
