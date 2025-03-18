@@ -32,4 +32,12 @@ function findUser(username, password) {
             return Promise.reject({ status: 404, msg: 'Invalid username or password' })
         })
 }
-module.exports = { fetchAllUsers, fetchUser, findUser }
+function decodeUserToken(token) {
+    return jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return Promise.reject({ status: 403, msg: 'Invalid authorisation token' })
+        }
+        return Promise.resolve(decoded)
+    })
+}
+module.exports = { fetchAllUsers, fetchUser, findUser, decodeUserToken }
