@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt')
 const db = require('../../db/connection')
 const jwt = require('jsonwebtoken')
+const jwtSecret = process.env.JWT_SECRET
+const jwtExpirity = process.env.JWT_EXPIRES_IN
 function fetchAllUsers() {
     return db.query('SELECT * FROM users')
         .then(({ rows }) => {
@@ -25,15 +27,15 @@ function findUser(username, password) {
             if (bcrypt.compareSync(password, rows[0].password)) {
                 const token = jwt.sign(
                     { username: rows[0].username, avatar_url: rows[0].avatar_url, name: rows[0].name },
-                    process.env.JWT_SECRET,
-                    { expiresIn: process.env.JWT_EXPIRES_IN })
+                    jwtSecret,
+                    { expiresIn: jwtExpirity })
                 return { token, msg: 'User was found, credentials are valid' }
             }
             return Promise.reject({ status: 404, msg: 'Invalid username or password' })
         })
 }
 function decodeUserToken(token) {
-    return jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    return jwt.verify(token, jwtSecret, (err, decoded) => {
         if (err) {
             return Promise.reject({ status: 403, msg: 'Invalid authorisation token' })
         }
