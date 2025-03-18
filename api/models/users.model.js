@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const db = require('../../db/connection')
+const jwt = require('jsonwebtoken')
 function fetchAllUsers() {
     return db.query('SELECT * FROM users')
         .then(({ rows }) => {
@@ -21,7 +22,14 @@ function findUser(username, password) {
             if (!rows.length) {
                 return Promise.reject({ status: 404, msg: 'Invalid username or password' })
             }
-            return bcrypt.compareSync(password, rows[0].password) ? { msg: 'User was found, credentials are valid' } : Promise.reject({ status: 404, msg: 'Invalid username or password' })
+            if (bcrypt.compareSync(password, rows[0].password)) {
+                const token = jwt.sign(
+                    { username: rows[0].username, avatar_url: rows[0].avatar_url, name: rows[0].name },
+                    process.env.JWT_SECRET,
+                    { expiresIn: process.env.JWT_EXPIRES_IN })
+                return { token, msg: 'User was found, credentials are valid' }
+            }
+            return Promise.reject({ status: 404, msg: 'Invalid username or password' })
         })
 }
 module.exports = { fetchAllUsers, fetchUser, findUser }

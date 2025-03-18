@@ -266,6 +266,7 @@
     ],
     "parameters": [],
     "exampleResponse": {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imx1cmtlciIsImF2YXRhcl91cmwiOiJodHRwczovL3d3dy5nb2xlbmJvY2suY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDE1LzAxL3BsYWNlaG9sZGVyLXVzZXIucG5nIiwibmFtZSI6ImRvX25vdGhpbmciLCJpYXQiOjE3NDIzMTUyNjUsImV4cCI6MTc0MjQwMTY2NX0.mx-6yGZm7k9ASowdSSKSWlS4OGpODgz2SS52LPfog74",
       "msg": "User was found, credentials are valid"
     }
   }
