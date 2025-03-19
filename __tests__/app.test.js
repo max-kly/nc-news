@@ -724,8 +724,13 @@ describe('Users endpoints tests:', () => {
       return request(app)
         .get('/api/users/login?username=lurker&password=lurker111')
         .expect(200)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe('User was found, credentials are valid')
+        .then(({ body: { userData } }) => {
+          expect(userData).toEqual(
+            {
+              username: 'lurker',
+              name: 'do_nothing',
+              avatar_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png'
+            })
         })
     })
     test('Get 404: Returns "Invalid username or password" message', () => {

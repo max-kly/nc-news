@@ -27,7 +27,12 @@ function findUser(username, password) {
                     { username: rows[0].username, avatar_url: rows[0].avatar_url, name: rows[0].name },
                     process.env.JWT_SECRET,
                     { expiresIn: process.env.JWT_EXPIRES_IN })
-                return { token, msg: 'User was found, credentials are valid' }
+                const userData = {
+                    username: rows[0].username,
+                    name: rows[0].name,
+                    avatar_url: rows[0].avatar_url
+                }
+                return { token, userData }
             }
             return Promise.reject({ status: 404, msg: 'Invalid username or password' })
         })
@@ -35,7 +40,7 @@ function findUser(username, password) {
 function decodeUserToken(token) {
     return jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-            return Promise.reject({ status: 403, msg: 'Invalid authorisation token' })
+            return Promise.reject({ status: 403, msg: 'Invalid auth token' })
         }
         return Promise.resolve(decoded)
     })

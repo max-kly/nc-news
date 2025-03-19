@@ -23,22 +23,17 @@ function loginUser(request, response, next) {
     const { username, password } = request.query
     if (!username || !password) next({ status: 404, msg: 'Invalid username or password' })
     findUser(username, password)
-        .then(({ token, msg }) => {
-            response.cookie("token", token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: 'Strict',
-                maxAge: 24 * 60 * 60 * 1000
-            }).status(200).send({ msg })
+        .then(({ token, userData }) => {
+            response.status(200).send({ token, userData })
         })
         .catch((err) => {
             next(err)
         })
 }
 function authUser(request, response, next) {
-    const token = request.headers.authorization.split(" ")[1]
-    if (!token) next({ status: 401, msg: 'No authorisation token provided' })
-    decodeUserToken(token)
+    const { session } = request.query
+    if (!session) return next({ status: 401, msg: 'No auth token provided' })
+    decodeUserToken(session)
         .then((data) => {
             response.status(200).send({ data })
         })
