@@ -272,7 +272,7 @@
   },
   "GET /api/users/auth": {
     "description": "serves a response if JWT token is valid and user authenticated",
-    "queries": [],
+    "queries": ["session"],
     "parameters": [],
     "exampleResponse": {
       "data": {
