@@ -14,6 +14,7 @@ This repo contains a backend for blog platofrm<br />
 Full api description is availabe in `endpoints.json` file or [here](https://nc-news-yuce.onrender.com/api) <br />
 Live demo is [here](https://nc-news-yuce.onrender.com/api)<br />
 Frontend repo to take a look or clone is [here](https://github.com/max-kly/fe-nc-news/)<br />
+
 --- 
 ## Tech stack ⚙️
 - ⚡ NodeJS
@@ -94,6 +95,6 @@ Frontend repo to take a look or clone is [here](https://github.com/max-kly/fe-nc
 <br />
 <br />
 <br />
----
 
+---
 This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com)
