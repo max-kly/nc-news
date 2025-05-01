@@ -123,7 +123,8 @@ NC NEWS allows users to:
 ---
 
 ## ☁️ Deployment (Render & Supabase)
-
+> [!CAUTION]
+> Before proceeding to backend deployment steps, make sure to go through the explanation of [noSleep.js](#nosleepjs) file
 1. Create a `.env.production` file with:
    ```sh
    DATABASE_URL=*your-database-url*
@@ -145,6 +146,17 @@ NC NEWS allows users to:
    - Set the environment variables from `.env.production`.
    - Choose a region (`Oregon`, `Ohio`, `Frankfurt`, `Singapore` based on user location).
    - Deploy the service.
+
+---
+
+## `noSleep.js` 🛑
+
+`noSleep.js` prevents **Render's free plan** from **spinning down** the backend due to inactivity. It makes a request to itself every **2 minutes**.
+Function fetches the article from the database to prevent **Supabase free plan** from **spinning down as well**
+
+If using a **paid plan** or a different hosting provider **without this limitation**, you can:
+- Delete `noSleep.js` from `backend/`.
+- Remove `noSleep.js` imports from `backend/api/index.js`.
 
 ---
 
